@@ -1,0 +1,336 @@
+{
+    "type": "object",
+    "properties": {
+        "version": {
+            "$ref": "#/definitions/Version"
+        },
+        "type": {
+            "enum": [
+                "Request",
+                "Response",
+                "Event",
+                "Ping",
+                "Pong"
+            ]
+        },
+        "uuid": {
+            "type": "string"
+        },
+        "payload": {
+            "type": "object"
+        }
+    },
+    "required": [
+        "version",
+        "type",
+        "uuid"
+    ],
+    "definitions": {
+        "Version": {
+            "$id": "Version",
+            "type": "object",
+            "properties": {
+                "major": {
+                    "type": "number"
+                },
+                "minor": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "major",
+                "minor"
+            ]
+        },
+        "Error": {
+            "$id": "Error",
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "code",
+                "message"
+            ]
+        },
+        "Data": {
+            "definitions": {
+                "FightArenaSlotType": {
+                    "$id": "Data.FightArenaSlotType",
+                    "enum": [ "Allie", "Enemy" ]
+                },
+                "FightArenaSlotCoord": {
+                    "$id": "Data.FightArenaSlotCoord",
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "$ref": "#definitions/Data.FightArenaSlotType"
+                        },
+                        "index": {
+                            "type": "number"
+                        }
+                    },
+                    "required": [
+                        "type",
+                        "index"
+                    ],
+                    "definitions": {
+                        "": {}
+                    }
+                },
+                "SomeType": {
+                    "$id": "Data.SomeType",
+                    "type": "object",
+                    "properties": {
+                        "var": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "var"
+                    ],
+                    "definitions": {
+                        "State": {
+                            "$id": "Data.SomeType.State",
+                            "enum": [ "One", "Two" ]
+                        },
+                        "NestedType": {
+                            "$id": "Data.SomeType.NestedType",
+                            "type": "object",
+                            "properties": {
+                                "test": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "test"
+                            ],
+                            "definitions": {
+                                "": {}
+                            }
+                        },
+                        "": {}
+                    }
+                },
+                "": {}
+            }
+        },
+        "ClientRequest": {
+            "$id": "ClientRequest",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "enum": [ "Handshake" ]
+                },
+                "body": {
+                    "type": "object"
+                }
+            },
+            "required": [
+                "type",
+                "payload"
+            ],
+            "definitions": {
+                "Handshake": {
+                    "$id": "ClientRequest.Handshake",
+                    "type": "object",
+                    "properties": {
+                        "clientId": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "clientId"
+                    ]
+                }
+            }
+        },
+        "ClientResponse": {
+            "$id": "ClientResponse",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "enum": [ "Handshake" ]
+                },
+                "requestUuid": {
+                    "type": "string"
+                },
+                "error": {
+                    "oneOf": [
+                        { "type": "null" },
+                        { "$ref": "Error" }
+                    ]
+                },
+                "payload": {
+                    "oneOf": [
+                        { "type": "null" },
+                        { "type": "object" }
+                    ]
+                }
+            },
+            "required": [
+                "type",
+                "requestUuid",
+                "error",
+                "payload"
+            ],
+            "definitions": {
+                "Handshake": {
+                "$id": "ClientResponse.Handshake",
+                "type": "object",
+                "properties": {
+                },
+                "required": [
+                ]
+                }
+            }
+        },
+        "ClientEvent": {
+            "$id": "ClientEvent",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "enum": [ "Ready" ]
+                },
+                "body": {
+                    "type": "object"
+                }
+            },
+            "required": [
+                "type",
+                "body"
+            ],
+            "definitions": {
+                "Ready": {
+                    "$id": "ClientEvent.Ready",
+                    "type": "object",
+                    "properties": {
+                    },
+                    "required": [
+                    ]
+                }
+            }
+        },
+        "ServerRequest": {
+            "$id": "ServerRequest",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "enum": [ "StartFight" ]
+                },
+                "body": {
+                    "type": "object"
+                }
+            },
+            "required": [
+                "type",
+                "payload"
+            ],
+            "definitions": {
+                "StartFight": {
+                    "$id": "ServerRequest.StartFight",
+                    "type": "object",
+                    "properties": {
+                        "data": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "data"
+                    ]
+                }
+            }
+        },
+        "ServerResponse": {
+            "$id": "ServerResponse",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "enum": [ "StartFight" ]
+                },
+                "requestUuid": {
+                    "type": "string"
+                },
+                "error": {
+                    "oneOf": [
+                        { "type": "null" },
+                        { "$ref": "Error" }
+                    ]
+                },
+                "payload": {
+                    "oneOf": [
+                        { "type": "null" },
+                        { "type": "object" }
+                    ]
+                }
+            },
+            "required": [
+                "type",
+                "requestUuid",
+                "error",
+                "payload"
+            ],
+            "definitions": {
+                "StartFight": {
+                "$id": "ServerResponse.StartFight",
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "address"
+                ]
+                }
+            }
+        },
+        "ServerEvent": {
+            "$id": "ServerEvent",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "enum": [ "FightEnd" ]
+                },
+                "body": {
+                    "type": "object"
+                }
+            },
+            "required": [
+                "type",
+                "body"
+            ],
+            "definitions": {
+                "FightEnd": {
+                    "$id": "ServerEvent.FightEnd",
+                    "type": "object",
+                    "properties": {
+                        "fightId": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "fightId"
+                    ]
+                }
+            }
+        },
+        "Pong": {
+            "$id": "Pong",
+            "type": "object",
+            "properties": {
+                "pingUuid": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "pingUuid"
+            ]
+        }
+    }
+}
